@@ -1,780 +1,0 @@
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>مجموعة العظمة - النظام الكامل</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <link rel="icon" type="image/x-icon" href="https://files.catbox.moe/7pcx7j.jpg">
-</head>
-<body>
-    <!-- شاشة التحميل -->
-    <div class="loader" id="loader">
-        <div class="loader-content">
-            <div class="loader-logo"></div>
-            <div class="loader-text">مجموعة العظمة</div>
-            <div class="loader-bar">
-                <div class="loader-progress"></div>
-            </div>
-        </div>
-    </div>
-
-    <!-- شاشة تسجيل الدخول -->
-    <div class="login-screen" id="loginScreen">
-        <div class="login-container">
-            <div class="login-logo">
-                <img src="https://files.catbox.moe/7pcx7j.jpg" alt="شعار العظمة">
-                <h1>مجموعة العظمة</h1>
-                <p>أشخاص اختاروا أن يكونوا عظماء</p>
-            </div>
-            
-            <div class="login-form">
-                <h2>تسجيل الدخول</h2>
-                <div class="login-members-list" id="membersList">
-                    <!-- يتم تعبئته بالجافاسكريبت -->
-                </div>
-                <div class="login-password">
-                    <input type="password" id="passwordInput" placeholder="كلمة المرور" autocomplete="current-password">
-                    <button id="loginBtn">دخول</button>
-                </div>
-                <div class="remember-me">
-                    <input type="checkbox" id="rememberMe" checked>
-                    <label for="rememberMe">تذكرني</label>
-                </div>
-                <div class="login-guest">
-                    <button id="guestModeBtn">الدخول كزائر</button>
-                </div>
-                <div class="login-notice" id="loginNotice"></div>
-            </div>
-        </div>
-    </div>
-
-    <!-- شاشة الحظر -->
-    <div class="banned-screen" id="bannedScreen" style="display: none;">
-        <div class="banned-container">
-            <div class="banned-icon">
-                <i class="fas fa-ban"></i>
-            </div>
-            <h1>حسابك محظور</h1>
-            <p id="banReasonText">لقد تم حظر حسابك من الوصول إلى الموقع.</p>
-            <button id="returnToLoginBtn">العودة لتسجيل الدخول</button>
-        </div>
-    </div>
-
-    <!-- الهيكل الرئيسي للموقع -->
-    <div class="site-wrapper" id="siteWrapper" style="display: none;">
-        <!-- شريط التنقل العلوي -->
-        <nav class="navbar">
-            <div class="nav-left">
-                <button class="menu-toggle" id="menuToggle">
-                    <i class="fas fa-bars"></i>
-                </button>
-                <div class="nav-logo">
-                    <img src="https://files.catbox.moe/7pcx7j.jpg" alt="شعار">
-                    <span>العظمة</span>
-                </div>
-            </div>
-            
-            <div class="nav-center">
-                <div class="daily-message">
-                    <i class="fas fa-bullhorn"></i>
-                    <span id="dailyMessageText">مرحباً بكم في موقع العظمة الرسمي!</span>
-                </div>
-            </div>
-            
-            <div class="nav-right">
-                <div class="points-display">
-                    <i class="fas fa-coins"></i>
-                    <span id="userPoints">0</span>
-                </div>
-                <button class="notifications-btn" id="notificationsBtn">
-                    <i class="fas fa-bell"></i>
-                    <span class="notifications-count" id="notificationsCount">0</span>
-                </button>
-                <div class="user-avatar-small" id="userAvatarSmall">
-                    <img src="https://files.catbox.moe/7pcx7j.jpg" alt="صورة المستخدم">
-                </div>
-            </div>
-        </nav>
-
-        <!-- القائمة الجانبية -->
-        <aside class="sidebar" id="sidebar">
-            <div class="sidebar-header">
-                <div class="user-profile-sidebar">
-                    <img src="https://files.catbox.moe/7pcx7j.jpg" alt="صورة المستخدم" id="sidebarUserAvatar">
-                    <div class="user-info-sidebar">
-                        <h3 id="sidebarUserName">زائر</h3>
-                        <p id="sidebarUserRank">زائر</p>
-                    </div>
-                </div>
-            </div>
-            
-            <ul class="sidebar-menu">
-                <li><a href="#" data-section="home" class="active"><i class="fas fa-home"></i> الصفحة الرئيسية</a></li>
-                <li><a href="#" data-section="members"><i class="fas fa-users"></i> الأعضاء</a></li>
-                <li><a href="#" data-section="chat"><i class="fas fa-comments"></i> الدردشة</a></li>
-                <li><a href="#" data-section="shop"><i class="fas fa-store"></i> المتجر</a></li>
-                <li><a href="#" data-section="market"><i class="fas fa-exchange-alt"></i> السوق المفتوح</a></li>
-                <li><a href="#" data-section="currency"><i class="fas fa-coins"></i> العملة</a></li>
-                <li><a href="#" data-section="profile"><i class="fas fa-user"></i> البروفايل</a></li>
-                <li><a href="#" data-section="statistics"><i class="fas fa-chart-line"></i> الإحصائيات</a></li>
-                <li class="admin-only" style="display: none;"><a href="#" data-section="admin"><i class="fas fa-crown"></i> الإدارة</a></li>
-                <li><a href="#" id="logoutBtnSidebar"><i class="fas fa-sign-out-alt"></i> تسجيل الخروج</a></li>
-            </ul>
-            
-            <div class="sidebar-footer">
-                <div class="online-users">
-                    <h4><i class="fas fa-signal"></i> الأعضاء المتصلين (<span id="onlineCountSidebar">0</span>)</h4>
-                    <div class="online-list" id="onlineListSidebar">
-                        <!-- يتم تعبئته بالجافاسكريبت -->
-                    </div>
-                </div>
-                
-                <div class="code-box">
-                    <input type="text" id="codeInput" placeholder="أدخل كود الهدية">
-                    <button id="redeemCodeBtn">استخدام</button>
-                </div>
-            </div>
-        </aside>
-
-        <!-- المحتوى الرئيسي -->
-        <main class="main-content" id="mainContent">
-            <!-- الصفحة الرئيسية -->
-            <section class="content-section active" id="homeSection">
-                <div class="section-header">
-                    <h1><i class="fas fa-home"></i> الصفحة الرئيسية</h1>
-                </div>
-                
-                <div class="welcome-card">
-                    <div class="welcome-image">
-                        <img src="https://files.catbox.moe/7pcx7j.jpg" alt="صورة المجموعة">
-                    </div>
-                    <div class="welcome-text">
-                        <h2>مرحباً بك في العظمة</h2>
-                        <p>اشخاص اختارو ان يكونو عظماء</p>
-                    </div>
-                </div>
-                
-                <div class="stats-cards">
-                    <div class="stat-card">
-                        <i class="fas fa-users"></i>
-                        <div class="stat-info">
-                            <h3>إجمالي الأعضاء</h3>
-                            <span id="totalMembersCount">0</span>
-                        </div>
-                    </div>
-                    <div class="stat-card">
-                        <i class="fas fa-signal"></i>
-                        <div class="stat-info">
-                            <h3>الأعضاء المتصلين</h3>
-                            <span id="onlineMembersCount">0</span>
-                        </div>
-                    </div>
-                    <div class="stat-card">
-                        <i class="fas fa-coins"></i>
-                        <div class="stat-info">
-                            <h3>إجمالي النقاط</h3>
-                            <span id="totalPointsCount">0</span>
-                        </div>
-                    </div>
-                    <div class="stat-card">
-                        <i class="fas fa-comments"></i>
-                        <div class="stat-info">
-                            <h3>رسائل اليوم</h3>
-                            <span id="todayMessagesCount">0</span>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="daily-news">
-                    <h3><i class="fas fa-newspaper"></i> خبر اليوم</h3>
-                    <div class="news-content" id="dailyNewsContent">
-                        <!-- يتم تعبئته بالجافاسكريبت -->
-                    </div>
-                </div>
-                
-                <div class="quick-actions">
-                    <h3><i class="fas fa-bolt"></i> إجراءات سريعة</h3>
-                    <div class="action-buttons">
-                        <button class="action-btn" data-section="chat">
-                            <i class="fas fa-comment-dots"></i>
-                            <span>الدردشة</span>
-                        </button>
-                        <button class="action-btn" data-section="shop">
-                            <i class="fas fa-shopping-cart"></i>
-                            <span>المتجر</span>
-                        </button>
-                        <button class="action-btn" data-section="currency">
-                            <i class="fas fa-exchange-alt"></i>
-                            <span>تحويل نقاط</span>
-                        </button>
-                        <button class="action-btn" data-section="members">
-                            <i class="fas fa-user-friends"></i>
-                            <span>الأعضاء</span>
-                        </button>
-                    </div>
-                </div>
-            </section>
-
-            <!-- قسم الأعضاء -->
-            <section class="content-section" id="membersSection">
-                <div class="section-header">
-                    <h1><i class="fas fa-users"></i> أعضاء المجموعة</h1>
-                    <div class="section-controls">
-                        <select id="filterMembersSelect">
-                            <option value="all">جميع الأعضاء</option>
-                            <option value="online">المتصلون فقط</option>
-                            <option value="admins">المشرفون</option>
-                            <option value="banned">المحظورون</option>
-                        </select>
-                        <input type="text" id="searchMembersInput" placeholder="بحث باسم العضو...">
-                    </div>
-                </div>
-                
-                <div class="members-grid" id="membersGrid">
-                    <!-- يتم تعبئة بطاقات الأعضاء هنا -->
-                </div>
-            </section>
-
-            <!-- قسم الدردشة -->
-            <section class="content-section" id="chatSection">
-                <div class="section-header">
-                    <h1><i class="fas fa-comments"></i> دردشة المجموعة</h1>
-                    <div class="chat-stats">
-                        <span><i class="fas fa-signal"></i> <span id="onlineChatCount">0</span> متصل الآن</span>
-                        <span><i class="fas fa-crown"></i> الأكثر نشاطاً: <span id="mostActiveUser">-</span></span>
-                        <span><i class="fas fa-comment-alt"></i> رسائلك اليوم: <span id="userMessagesToday">0</span></span>
-                    </div>
-                </div>
-                
-                <!-- نظام المكافآت المرئي -->
-                <div class="rewards-progress-container">
-                    <h3><i class="fas fa-gift"></i> تقدم المكافآت</h3>
-                    <div class="rewards-stages">
-                        <div class="stage active" data-stage="1">
-                            <span>المرحلة 1</span>
-                            <span>10 رسائل = 20 نقطة</span>
-                        </div>
-                        <div class="stage" data-stage="2">
-                            <span>المرحلة 2</span>
-                            <span>20 رسائل = 30 نقطة</span>
-                        </div>
-                        <div class="stage" data-stage="3">
-                            <span>المرحلة 3</span>
-                            <span>30 رسائل = 40 نقطة</span>
-                        </div>
-                        <div class="stage" data-stage="4">
-                            <span>المرحلة 4</span>
-                            <span>40 رسائل = 50 نقطة</span>
-                        </div>
-                        <div class="stage" data-stage="5">
-                            <span>المرحلة 5</span>
-                            <span>50 رسائل = 60 نقطة</span>
-                        </div>
-                    </div>
-                    <div class="progress-info">
-                        <div class="progress-bar">
-                            <div class="progress-fill" id="chatProgressFill" style="width: 0%"></div>
-                        </div>
-                        <div class="progress-text">
-                            <span id="currentMessages">0</span> / <span id="targetMessages">10</span> رسالة
-                            <span class="reward-amount" id="currentReward">20 نقطة</span>
-                        </div>
-                        <div class="progress-timer">
-                            <i class="fas fa-clock"></i>
-                            <span>تحديث العد: <span id="resetTimer">60:00</span></span>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="chat-container">
-                    <div class="chat-messages" id="chatMessages">
-                        <!-- يتم تعبئة الرسائل هنا -->
-                    </div>
-                    
-                    <div class="chat-input-container">
-                        <div class="input-wrapper">
-                            <input type="text" id="chatInput" placeholder="اكتب رسالتك هنا..." maxlength="200">
-                            <button class="send-btn" id="sendBtn">
-                                <i class="fas fa-paper-plane"></i>
-                            </button>
-                        </div>
-                        <div class="chat-emoji">
-                            <button class="emoji-btn" id="emojiBtn">😀</button>
-                        </div>
-                    </div>
-                    
-                    <div class="chat-rules">
-                        <p><i class="fas fa-exclamation-circle"></i> قواعد الشات: ممنوع السبام - ممنوع الإساءة - احترام الجميع</p>
-                    </div>
-                </div>
-            </section>
-
-            <!-- قسم المتجر -->
-            <section class="content-section" id="shopSection">
-                <div class="section-header">
-                    <h1><i class="fas fa-store"></i> متجر العظمة</h1>
-                    <div class="shop-balance">
-                        <span>رصيدك الحالي: <strong id="shopUserBalance">0</strong> <i class="fas fa-coins"></i></span>
-                    </div>
-                </div>
-                
-                <div class="shop-tabs">
-                    <button class="shop-tab active" data-tab="ranks">الرتب</button>
-                    <button class="shop-tab" data-tab="name-colors">ألوان الأسماء</button>
-                    <button class="shop-tab" data-tab="backgrounds">الخلفيات</button>
-                    <button class="shop-tab" data-tab="logos">الشعارات</button>
-                </div>
-                
-                <div class="shop-items-container" id="shopItemsContainer">
-                    <!-- يتم تعبئة عناصر المتجر هنا -->
-                </div>
-            </section>
-
-            <!-- قسم السوق المفتوح -->
-            <section class="content-section" id="marketSection">
-                <div class="section-header">
-                    <h1><i class="fas fa-exchange-alt"></i> السوق المفتوح</h1>
-                    <div class="section-controls">
-                        <button class="btn btn-primary" id="sellItemBtn">
-                            <i class="fas fa-plus"></i> بيع عنصر
-                        </button>
-                    </div>
-                </div>
-                
-                <div class="market-filters">
-                    <select id="marketFilterType">
-                        <option value="all">جميع الأنواع</option>
-                        <option value="rank">رتب</option>
-                        <option value="name-color">ألوان الأسماء</option>
-                        <option value="background">خلفيات</option>
-                        <option value="logo">شعارات</option>
-                    </select>
-                    <select id="marketFilterSort">
-                        <option value="newest">الأحدث</option>
-                        <option value="price-low">السعر: منخفض إلى مرتفع</option>
-                        <option value="price-high">السعر: مرتفع إلى منخفض</option>
-                    </select>
-                    <input type="text" id="marketSearch" placeholder="بحث بالاسم...">
-                </div>
-                
-                <div class="market-items" id="marketItems">
-                    <!-- يتم تعبئة عناصر السوق هنا -->
-                </div>
-            </section>
-
-            <!-- قسم العملة -->
-            <section class="content-section" id="currencySection">
-                <div class="section-header">
-                    <h1><i class="fas fa-coins"></i> العملة والنقاط</h1>
-                    <div class="currency-balance">
-                        <i class="fas fa-wallet"></i>
-                        <span>رصيدك: <strong id="currencyBalance">0</strong> نقطة</span>
-                    </div>
-                </div>
-                
-                <div class="currency-container">
-                    <div class="currency-transfer">
-                        <h3><i class="fas fa-exchange-alt"></i> تحويل النقاط</h3>
-                        <div class="transfer-form">
-                            <select id="transferToSelect">
-                                <option value="">اختر العضو</option>
-                            </select>
-                            <input type="number" id="transferAmount" placeholder="المبلغ" min="1">
-                            <div class="transfer-fee">
-                                <span>رسوم التحويل: <span id="transferFee">0</span> نقطة (1%)</span>
-                            </div>
-                            <button class="btn btn-primary" id="transferBtn">تحويل</button>
-                        </div>
-                    </div>
-                    
-                    <div class="currency-history">
-                        <h3><i class="fas fa-history"></i> سجل التحويلات</h3>
-                        <div class="history-list" id="transferHistory">
-                            <!-- يتم تعبئة سجل التحويلات هنا -->
-                        </div>
-                    </div>
-                    
-                    <div class="currency-codes">
-                        <h3><i class="fas fa-gift"></i> أكواد الهدايا</h3>
-                        <div class="code-input-section">
-                            <input type="text" id="giftCodeInput" placeholder="أدخل كود الهدية">
-                            <button class="btn btn-success" id="redeemGiftCodeBtn">استخدام الكود</button>
-                        </div>
-                        <div class="codes-history" id="codesHistory">
-                            <!-- يتم تعبئة تاريخ الأكواد هنا -->
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- البروفايل الشخصي -->
-            <section class="content-section" id="profileSection">
-                <div class="section-header">
-                    <h1><i class="fas fa-user"></i> البروفايل الشخصي</h1>
-                    <button class="btn btn-secondary" id="editProfileBtn">
-                        <i class="fas fa-edit"></i> تعديل
-                    </button>
-                </div>
-                
-                <div class="profile-container">
-                    <div class="profile-card" id="profileCard">
-                        <!-- يتم تعبئة البروفايل هنا -->
-                    </div>
-                    
-                    <!-- قسم البايو مع إمكانية التعديل -->
-                    <div class="bio-section" id="bioSection">
-                        <div class="bio-header">
-                            <h3><i class="fas fa-quote-left"></i> الوصف الشخصي</h3>
-                            <button class="btn btn-small" id="editBioBtn">
-                                <i class="fas fa-edit"></i> تغيير البايو
-                            </button>
-                        </div>
-                        <div class="bio-content" id="bioContent">
-                            <!-- يتم تعبئة البايو هنا -->
-                        </div>
-                    </div>
-                    
-                    <div class="profile-tabs">
-                        <button class="profile-tab active" data-tab="items">عناصري</button>
-                        <button class="profile-tab" data-tab="activity">نشاطي</button>
-                        <button class="profile-tab" data-tab="settings">الإعدادات</button>
-                    </div>
-                    
-                    <div class="profile-content">
-                        <!-- تبويب العناصر المملوكة -->
-                        <div class="profile-tab-content active" id="itemsTab">
-                            <h3><i class="fas fa-box"></i> العناصر المملوكة</h3>
-                            <div class="owned-items" id="ownedItems">
-                                <!-- يتم تعبئته بالجافاسكريبت -->
-                            </div>
-                        </div>
-                        
-                        <!-- تبويب النشاط -->
-                        <div class="profile-tab-content" id="activityTab">
-                            <h3><i class="fas fa-chart-line"></i> نشاطي</h3>
-                            <div class="activity-stats">
-                                <div class="activity-stat">
-                                    <i class="fas fa-comment-alt"></i>
-                                    <div>
-                                        <span class="stat-label">مجموع الرسائل</span>
-                                        <span class="stat-value" id="totalMessagesStat">0</span>
-                                    </div>
-                                </div>
-                                <div class="activity-stat">
-                                    <i class="fas fa-coins"></i>
-                                    <div>
-                                        <span class="stat-label">مجموع النقاط</span>
-                                        <span class="stat-value" id="totalPointsStat">0</span>
-                                    </div>
-                                </div>
-                                <div class="activity-stat">
-                                    <i class="fas fa-calendar-day"></i>
-                                    <div>
-                                        <span class="stat-label">تاريخ الانضمام</span>
-                                        <span class="stat-value" id="joinDateStat">-</span>
-                                    </div>
-                                </div>
-                                <div class="activity-stat">
-                                    <i class="fas fa-star"></i>
-                                    <div>
-                                        <span class="stat-label">التقييم</span>
-                                        <span class="stat-value" id="ratingStat">0.0</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- تبويب الإعدادات -->
-                        <div class="profile-tab-content" id="settingsTab">
-                            <h3><i class="fas fa-cog"></i> إعدادات الحساب</h3>
-                            <div class="settings-form">
-                                <div class="setting-group">
-                                    <label for="changePassword">تغيير كلمة المرور</label>
-                                    <div class="password-change">
-                                        <input type="password" id="currentPassword" placeholder="كلمة المرور الحالية">
-                                        <input type="password" id="newPassword" placeholder="كلمة المرور الجديدة">
-                                        <input type="password" id="confirmPassword" placeholder="تأكيد كلمة المرور">
-                                        <button class="btn btn-primary" id="changePasswordBtn">تغيير</button>
-                                    </div>
-                                </div>
-                                <div class="setting-group">
-                                    <label>الإشعارات</label>
-                                    <label class="switch">
-                                        <input type="checkbox" id="notificationsToggle" checked>
-                                        <span class="slider"></span>
-                                        <span class="switch-label">تفعيل الإشعارات</span>
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- قسم الإحصائيات -->
-            <section class="content-section" id="statisticsSection">
-                <div class="section-header">
-                    <h1><i class="fas fa-chart-line"></i> الإحصائيات</h1>
-                </div>
-                
-                <div class="stats-container">
-                    <div class="stats-card">
-                        <h3><i class="fas fa-trophy"></i> التصنيف العام</h3>
-                        <div class="ranking-list" id="generalRanking">
-                            <!-- يتم تعبئته بالجافاسكريبت -->
-                        </div>
-                    </div>
-                    
-                    <div class="stats-card">
-                        <h3><i class="fas fa-fire"></i> الأكثر نشاطاً</h3>
-                        <div class="ranking-list" id="activityRanking">
-                            <!-- يتم تعبئته بالجافاسكريبت -->
-                        </div>
-                    </div>
-                    
-                    <div class="stats-card">
-                        <h3><i class="fas fa-coins"></i> الأكثر نقاطاً</h3>
-                        <div class="ranking-list" id="pointsRanking">
-                            <!-- يتم تعبئته بالجافاسكريبت -->
-                        </div>
-                    </div>
-                    
-                    <div class="stats-card full-width">
-                        <h3><i class="fas fa-chart-bar"></i> إحصائيات الموقع</h3>
-                        <div class="site-stats-grid">
-                            <div class="site-stat">
-                                <i class="fas fa-users"></i>
-                                <span class="stat-label">إجمالي الزوار</span>
-                                <span class="stat-value" id="totalVisitorsStat">0</span>
-                            </div>
-                            <div class="site-stat">
-                                <i class="fas fa-comments"></i>
-                                <span class="stat-label">مجموع الرسائل</span>
-                                <span class="stat-value" id="totalMessagesSiteStat">0</span>
-                            </div>
-                            <div class="site-stat">
-                                <i class="fas fa-shopping-cart"></i>
-                                <span class="stat-label">المبيعات</span>
-                                <span class="stat-value" id="totalSalesStat">0</span>
-                            </div>
-                            <div class="site-stat">
-                                <i class="fas fa-percentage"></i>
-                                <span class="stat-label">نسبة النشاط</span>
-                                <span class="stat-value" id="activityRateStat">0%</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- لوحة الإدارة -->
-            <section class="content-section" id="adminSection">
-                <div class="section-header">
-                    <h1><i class="fas fa-crown"></i> لوحة التحكم الإدارية</h1>
-                    <div class="admin-access">
-                        <i class="fas fa-shield-alt"></i>
-                        <span>الوصول مقصور على المشرف الأول</span>
-                    </div>
-                </div>
-                
-                <div class="admin-tabs">
-                    <button class="admin-tab active" data-tab="news">خبر اليوم</button>
-                    <button class="admin-tab" data-tab="shop-management">إدارة المتجر</button>
-                    <button class="admin-tab" data-tab="codes-management">إدارة الأكواد</button>
-                    <button class="admin-tab" data-tab="members-management">إدارة الأعضاء</button>
-                    <button class="admin-tab" data-tab="chat-management">إدارة الدردشة</button>
-                    <button class="admin-tab" data-tab="violations-list">قائمة المخالفات</button>
-                    <button class="admin-tab" data-tab="site-stats">إحصائيات الموقع</button>
-                </div>
-                
-                <div class="admin-content" id="adminContent">
-                    <!-- يتم تعبئة محتوى الإدارة هنا -->
-                </div>
-            </section>
-        </main>
-
-        <!-- نافذة بيع العنصر -->
-        <div class="modal" id="sellModalWindow">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h3><i class="fas fa-tag"></i> بيع عنصر</h3>
-                    <button class="close-modal">&times;</button>
-                </div>
-                <div class="modal-body">
-                    <div class="sell-form">
-                        <div class="form-group">
-                            <label for="sellItemSelect">اختر العنصر</label>
-                            <select id="sellItemSelect">
-                                <option value="">اختر العنصر للبيع</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="sellItemPrice">سعر البيع</label>
-                            <input type="number" id="sellItemPrice" placeholder="السعر بالنقاط" min="1">
-                        </div>
-                        <div class="form-actions">
-                            <button class="btn btn-secondary close-modal">إلغاء</button>
-                            <button class="btn btn-primary" id="confirmSellBtn">عرض للبيع</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- نافذة شراء العنصر -->
-        <div class="modal" id="buyModalWindow">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h3><i class="fas fa-shopping-cart"></i> شراء عنصر</h3>
-                    <button class="close-modal">&times;</button>
-                </div>
-                <div class="modal-body">
-                    <div class="buy-form">
-                        <div class="item-preview" id="buyItemPreview"></div>
-                        <div class="item-details">
-                            <h4 id="buyItemName"></h4>
-                            <p id="buyItemDescription"></p>
-                            <div class="item-price">
-                                <i class="fas fa-coins"></i>
-                                <span id="buyItemPrice"></span> نقطة
-                            </div>
-                            <div class="seller-info">
-                                <img id="buyItemSellerAvatar" src="">
-                                <span id="buyItemSellerName"></span>
-                            </div>
-                        </div>
-                        <div class="form-actions">
-                            <button class="btn btn-secondary close-modal">إلغاء</button>
-                            <button class="btn btn-primary" id="confirmBuyBtn">شراء الآن</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- نافذة التقييم -->
-        <div class="modal" id="ratingModal">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h3><i class="fas fa-star"></i> تقييم العضو</h3>
-                    <button class="close-modal">&times;</button>
-                </div>
-                <div class="modal-body">
-                    <div class="rating-form">
-                        <div class="rating-stars" id="ratingStars">
-                            <i class="fas fa-star" data-rating="1"></i>
-                            <i class="fas fa-star" data-rating="2"></i>
-                            <i class="fas fa-star" data-rating="3"></i>
-                            <i class="fas fa-star" data-rating="4"></i>
-                            <i class="fas fa-star" data-rating="5"></i>
-                        </div>
-                        <textarea id="ratingComment" placeholder="اكتب تعليقك عن هذا العضو (اختياري)" rows="3"></textarea>
-                        <div class="form-actions">
-                            <button class="btn btn-secondary close-modal">إلغاء</button>
-                            <button class="btn btn-primary" id="submitRatingBtn">إرسال التقييم</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- نافذة تعديل البايو -->
-        <div class="modal" id="editBioModal">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h3><i class="fas fa-edit"></i> تعديل الوصف الشخصي</h3>
-                    <button class="close-modal">&times;</button>
-                </div>
-                <div class="modal-body">
-                    <div class="bio-edit-form">
-                        <div class="form-group">
-                            <label for="newBioInput">الوصف الجديد</label>
-                            <textarea id="newBioInput" placeholder="اكتب وصفك الشخصي الجديد..." rows="4" maxlength="200"></textarea>
-                            <div class="char-count">
-                                <span id="bioCharCount">0</span>/200 حرف
-                            </div>
-                        </div>
-                        <div class="bio-cost">
-                            <i class="fas fa-coins"></i>
-                            <span>تكلفة التعديل: <strong>5000</strong> نقطة</span>
-                        </div>
-                        <div class="form-actions">
-                            <button class="btn btn-secondary close-modal">إلغاء</button>
-                            <button class="btn btn-primary" id="saveBioBtn">حفظ التغييرات</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- نافذة التأكيد العامة -->
-        <div class="modal" id="confirmModal">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h3 id="confirmTitle"></h3>
-                    <button class="close-modal">&times;</button>
-                </div>
-                <div class="modal-body">
-                    <p id="confirmMessage"></p>
-                    <div class="form-actions">
-                        <button class="btn btn-secondary" id="cancelConfirmBtn">لا</button>
-                        <button class="btn btn-primary" id="okConfirmBtn">نعم</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- نافذة ميوت العضو -->
-        <div class="modal" id="muteModal">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h3><i class="fas fa-volume-mute"></i> ميوت العضو</h3>
-                    <button class="close-modal">&times;</button>
-                </div>
-                <div class="modal-body">
-                    <div class="mute-form">
-                        <div class="form-group">
-                            <label for="muteReasonSelect">سبب الميوت</label>
-                            <select id="muteReasonSelect">
-                                <option value="spam">السبام المتكرر</option>
-                                <option value="offensive">إساءة للآخرين</option>
-                                <option value="rules">خرق القواعد</option>
-                                <option value="advertising">الدعاية والإعلان</option>
-                                <option value="other">سبب آخر</option>
-                            </select>
-                            <input type="text" id="customMuteReason" placeholder="السبب المخصص" style="display: none;">
-                        </div>
-                        <div class="form-group">
-                            <label for="muteDurationSelect">مدة الميوت</label>
-                            <select id="muteDurationSelect">
-                                <option value="5">5 دقائق</option>
-                                <option value="15">15 دقيقة</option>
-                                <option value="30">30 دقيقة</option>
-                                <option value="60">ساعة واحدة</option>
-                                <option value="180">3 ساعات</option>
-                                <option value="1440">يوم كامل</option>
-                            </select>
-                        </div>
-                        <div class="form-actions">
-                            <button class="btn btn-secondary close-modal">إلغاء</button>
-                            <button class="btn btn-danger" id="confirmMuteBtn">تطبيق الميوت</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- إضافة Firebase SDKs -->
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
-    
-    <script src="app.js"></script>
-</body>
-</html>
