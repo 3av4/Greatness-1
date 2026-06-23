@@ -1,0 +1,16 @@
+{
+  "name": "موقع العظمة - The Greatness",
+  "short_name": "العظمة",
+  "description": "أشخاص اختاروا أن يكونوا عظماء",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0a0506",
+  "theme_color": "#8B0000",
+  "lang": "ar",
+  "dir": "rtl",
+  "icons": [
+    { "src": "/icons/icon-192.svg", "sizes": "192x192", "type": "image/svg+xml", "purpose": "any maskable" },
+    { "src": "/icons/icon-512.svg", "sizes": "512x512", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}
