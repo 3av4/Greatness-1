@@ -2,7 +2,7 @@
   "name": "موقع العظمة - The Greatness",
   "short_name": "العظمة",
   "description": "أشخاص اختاروا أن يكونوا عظماء",
-  "start_url": "/",
+  "start_url": "./",
   "display": "standalone",
   "orientation": "portrait",
   "background_color": "#0a0506",

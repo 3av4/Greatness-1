@@ -139,6 +139,32 @@ export default function Home() {
   );
 }
 
+const FRAME_STYLES: Record<string, React.CSSProperties> = {
+  neon: {
+    boxShadow: "0 0 20px rgba(138,43,226,0.5), 0 0 40px rgba(138,43,226,0.25), inset 0 0 20px rgba(138,43,226,0.1)",
+    border: "2px solid rgba(138,43,226,0.6)",
+  },
+  gold: {
+    boxShadow: "0 0 15px rgba(245,197,66,0.35)",
+    border: "2px solid transparent",
+    background: "linear-gradient(#0a0506, #0a0506) padding-box, linear-gradient(135deg, #FFD700, #FFA500, #FF8C00) border-box",
+  },
+  corner: {
+    border: "none",
+    position: "relative" as const,
+  },
+  double: {
+    outline: "3px solid rgba(16,185,129,0.6)",
+    outlineOffset: "2px",
+    border: "2px solid rgba(16,185,129,0.3)",
+    boxShadow: "0 0 15px rgba(16,185,129,0.2)",
+  },
+  segmented: {
+    border: "2px dashed rgba(99,102,241,0.5)",
+    position: "relative" as const,
+  },
+};
+
 function MemberCard({ member, index, canEdit, editing, onEdit, onCloseEdit, onUpdate }: {
   member: Member; index: number; canEdit: boolean; editing: boolean;
   onEdit: () => void; onCloseEdit: () => void;
@@ -146,6 +172,7 @@ function MemberCard({ member, index, canEdit, editing, onEdit, onCloseEdit, onUp
 }) {
   const rankGrad = RANK_GRADIENTS[member.rank] || RANK_GRADIENTS.member;
   const isSupreme = member.id === "m_abd1";
+  const frame = member.frameStyle || "neon";
 
   // Header background: bannerUrl or cardColor gradient
   const headerBg = member.bannerUrl
@@ -164,14 +191,35 @@ function MemberCard({ member, index, canEdit, editing, onEdit, onCloseEdit, onUp
   // Info section background: always solid, independent
   const infoBg = "linear-gradient(180deg, rgba(15,7,9,0.98), rgba(8,4,5,1))";
 
+  const frameStyle = FRAME_STYLES[frame] || FRAME_STYLES.neon;
+
   return (
+    <div className="relative p-[3px] rounded-xl" style={{ transform: "translateZ(0)", WebkitTransform: "translateZ(0)" }}>
+      {/* Corner accent pseudo-elements */}
+      {frame === "corner" && (
+        <>
+          <div className="absolute top-0 left-0 w-8 h-8 border-t-2 border-l-2 border-[#FF69B4] rounded-tl-lg z-10" />
+          <div className="absolute top-0 right-0 w-8 h-8 border-t-2 border-r-2 border-[#FF69B4] rounded-tr-lg z-10" />
+          <div className="absolute bottom-0 left-0 w-8 h-8 border-b-2 border-l-2 border-[#FF69B4] rounded-bl-lg z-10" />
+          <div className="absolute bottom-0 right-0 w-8 h-8 border-b-2 border-r-2 border-[#FF69B4] rounded-br-lg z-10" />
+        </>
+      )}
+      {/* Segmented corner dots */}
+      {frame === "segmented" && (
+        <>
+          <div className="absolute top-1.5 left-1.5 w-2 h-2 rounded-full bg-[#6366f1] z-10" />
+          <div className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-[#6366f1] z-10" />
+          <div className="absolute bottom-1.5 left-1.5 w-2 h-2 rounded-full bg-[#6366f1] z-10" />
+          <div className="absolute bottom-1.5 right-1.5 w-2 h-2 rounded-full bg-[#6366f1] z-10" />
+        </>
+      )}
     <motion.div
       initial={{ opacity: 0, y: 16 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.03, duration: 0.3 }}
       data-glow={member.borderColor ? "1" : undefined}
       className={`member-card rounded-xl overflow-hidden ${isSupreme ? "ring-1 ring-[#f5c542]/25" : ""}`}
-      style={{ transform: "translateZ(0)", WebkitTransform: "translateZ(0)", border: "1px solid var(--border)" }}
+      style={{ transform: "translateZ(0)", WebkitTransform: "translateZ(0)", ...frameStyle }}
     >
       {/* ===== HEADER SECTION (Image + Background only) ===== */}
       <div
@@ -201,6 +249,15 @@ function MemberCard({ member, index, canEdit, editing, onEdit, onCloseEdit, onUp
           {RANK_LABELS[member.rank]}
         </div>
 
+        {/* Banned badge */}
+        {member.isBanned && (
+          <div className="absolute inset-0 z-30 flex items-center justify-center bg-black/60">
+            <div className="px-4 py-2 rounded-xl border-2 border-red-500 bg-red-500/20 backdrop-blur-sm">
+              <span className="text-red-400 font-black text-lg tracking-wider">محظور</span>
+            </div>
+          </div>
+        )}
+
         {/* Emblems */}
         {member.emblems && member.emblems.length > 0 && (
           <div className="absolute top-2.5 left-2.5 flex gap-1 z-20">
@@ -212,7 +269,7 @@ function MemberCard({ member, index, canEdit, editing, onEdit, onCloseEdit, onUp
 
         {/* Name overlay at bottom of header */}
         <div className="absolute bottom-0 left-0 right-0 p-3 z-20">
-          <h3 className="text-xl font-black font-display text-white drop-shadow-lg">{member.handle}</h3>
+          <h3 className="text-xl font-black font-display drop-shadow-lg" style={{ color: member.nameColor || "#fff" }}>{member.handle}</h3>
           <p className="text-[11px] text-white/80">{member.name}</p>
         </div>
 
@@ -268,6 +325,53 @@ function MemberCard({ member, index, canEdit, editing, onEdit, onCloseEdit, onUp
           style={{ background: "rgba(5,3,4,0.98)", transform: "translateZ(0)", WebkitTransform: "translateZ(0)" }}
         >
           <div>
+            <label className="text-[10px] text-muted mb-1 block">لون الاسم</label>
+            <input type="color" value={member.nameColor || "#ffffff"}
+              onChange={(e) => onUpdate({ nameColor: e.target.value })}
+              className="w-full h-9 rounded-lg cursor-pointer bg-transparent" />
+          </div>
+          <div>
+            <label className="text-[10px] text-muted mb-1 block">الشعارات (2 كحد أقصى)</label>
+            <div className="flex gap-2">
+              <input type="text" value={member.emblems?.[0] || ""}
+                onChange={(e) => {
+                  const arr = [e.target.value, member.emblems?.[1] || ""].filter(Boolean);
+                  onUpdate({ emblems: arr });
+                }}
+                placeholder="👑"
+                maxLength={4}
+                className="input text-xs py-1.5 flex-1 text-center" />
+              <input type="text" value={member.emblems?.[1] || ""}
+                onChange={(e) => {
+                  const arr = [member.emblems?.[0] || "", e.target.value].filter(Boolean);
+                  onUpdate({ emblems: arr });
+                }}
+                placeholder="⚡"
+                maxLength={4}
+                className="input text-xs py-1.5 flex-1 text-center" />
+            </div>
+          </div>
+          <div>
+            <label className="text-[10px] text-muted mb-1 block">شكل الإطار</label>
+            <div className="grid grid-cols-5 gap-1.5">
+              {[
+                { key: "neon", label: "نيون", color: "#8A2BE2" },
+                { key: "gold", label: "ذهبي", color: "#FFD700" },
+                { key: "corner", label: "زوايا", color: "#FF69B4" },
+                { key: "double", label: "مزدوج", color: "#10B981" },
+                { key: "segmented", label: "مقطع", color: "#6366f1" },
+              ].map((f) => (
+                <button key={f.key} onClick={() => onUpdate({ frameStyle: f.key })}
+                  className={`py-1.5 rounded-lg text-[9px] font-bold transition ${
+                    (member.frameStyle || "neon") === f.key ? "ring-1 ring-white" : ""
+                  }`}
+                  style={{ background: `${f.color}22`, border: `1px solid ${f.color}55`, color: f.color }}>
+                  {f.label}
+                </button>
+              ))}
+            </div>
+          </div>
+          <div>
             <label className="text-[10px] text-muted mb-1 block">لون الإطار</label>
             <input type="color" value={member.borderColor || "#ff0040"}
               onChange={(e) => onUpdate({ borderColor: e.target.value })}
@@ -299,5 +403,6 @@ function MemberCard({ member, index, canEdit, editing, onEdit, onCloseEdit, onUp
         </motion.div>
       )}
     </motion.div>
+    </div>
   );
 }
